@@ -57,7 +57,31 @@ const autenticar = async (req, res) => {
     }
 }
 
+//Función para confirmar el json web token
+const confirmar = async (req, res) => {
+    
+    const { token } = req.params;
+    const usuarioConfirmar = await Usuario.findOne({token});
+
+    //Token invalido
+    if (!usuarioConfirmar) {
+        const error = new Error("Hubo un error");
+        return res.status(403).json({msg: error.message});
+    }
+
+    try {
+        usuarioConfirmar.confirmado = true;
+        usuarioConfirmar.token = "";
+        await usuarioConfirmar.save();
+        res.json({msg: "Usuario Confirmado Correctamente"});
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
 export {
     registrar,
-    autenticar
+    autenticar,
+    confirmar
 }
