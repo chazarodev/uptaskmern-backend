@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 //Definir el esquema (Estructura de la base de datos)
 const usuarioSchema = mongoose.Schema({
@@ -27,6 +28,15 @@ const usuarioSchema = mongoose.Schema({
     },
 }, {
     timeStamps: true //Nos genera dos columnas más, una de creado y otra de actualizado
+})
+
+//Hashear contrasena
+usuarioSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) {
+        next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 })
 
 const Usuario = mongoose.model("Usuario", usuarioSchema);
