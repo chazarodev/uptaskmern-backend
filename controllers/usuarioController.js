@@ -80,8 +80,76 @@ const confirmar = async (req, res) => {
 
 }
 
+//Función para reestablecer el password
+const olvidePassword = async (req, res) => {
+    const { email } = req.body;
+
+    //Comprobar si el usuario existe
+    const usuario = await Usuario.findOne({email});
+    if (!usuario) {
+        const error = new Error("El usuario no existe");
+        return res.status(404).json({msg: error.message});
+    }
+    
+    try {
+        usuario.token = generarID();
+        await usuario.save();
+        res.json({msg: "Hemos enviado un email con las instrucciones para reestableces tu password"});
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//Función para comprobar el token
+const comprobarToken = async (req, res) => {
+    const { token } = req.params;
+
+    //Verificar que el token exista
+    const tokenValido = await Usuario.findOne({ token });
+    
+    if (tokenValido) {
+        res.json({msg: 'Token valido y Usuario existente'});
+    } else {
+        const error = new Error("Ocurrió un error.");
+        return res.status(404).json({msg: error.message});
+    }
+}
+
+const nuevoPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    //Verificar que el token exista
+    const usuario = await Usuario.findOne({ token });
+    
+    if (usuario) {
+        usuario.password = password;
+        usuario.token = '';
+        try {
+            await usuario.save();
+            res.json({msg: 'Password modificado correctamente'});
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        const error = new Error("Ocurrió un error.");
+        return res.status(404).json({msg: error.message});
+    }
+}
+
+const perfil = async (req, res) => {
+    const { usuario } = req;
+
+    console.log(usuario);
+    res.json(usuario);
+}
+
 export {
     registrar,
     autenticar,
-    confirmar
+    confirmar,
+    olvidePassword,
+    comprobarToken,
+    nuevoPassword,
+    perfil,
 }
