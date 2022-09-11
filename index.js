@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import proyectoRoutes from "./routes/proyectoRoutes.js";
+import tareaRoutes from "./routes/tareaRoutes.js"
 
 const app = express(); //Iniciando el servidor
 app.use(express.json());//Procesar la infromación de tipo JSON
@@ -14,6 +15,7 @@ conectarDB(); //Llamar la función para conectar la DB
 //Routing
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/proyectos", proyectoRoutes);
+app.use("/api/tareas", tareaRoutes);
 
 const PORT = process.env.PORT || 4000;
 

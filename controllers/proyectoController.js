@@ -1,4 +1,5 @@
 import Proyecto from "../models/Proyecto.js";
+import Tarea from "../models/Tarea.js";
 
 //Función para obtener los proyectos
 const obtenerProyectos = async (req, res) => {
@@ -35,7 +36,13 @@ const obtenerProyecto = async (req, res) => {
         return res.status(401).json({msg: error.message});
     }
 
-    res.json(proyecto);
+    //Obtener las tareas del proyecto
+    const tareas = await Tarea.find().where("proyecto").equals(proyecto._id);
+
+    res.json({
+        proyecto,
+        tareas,
+    });
 }
 
 //Función para editar un proyecto
@@ -84,7 +91,7 @@ const eliminarProyecto = async (req, res) => {
     }
 
     try {
-        await Proyecto.deleteOne();
+        await proyecto.deleteOne();
         res.json({ msg: "Proyecto Eliminado"});
     } catch (error) {
         console.error(error);
@@ -99,10 +106,6 @@ const eliminarColaborador = async (req, res) => {
 
 }
 
-const obtenerTareas = async (req, res) => {
-
-}
-
 export {
     obtenerProyectos,
     nuevoProyecto,
@@ -111,6 +114,5 @@ export {
     eliminarProyecto,
     agregarColaborador,
     eliminarColaborador,
-    obtenerTareas
 }
 
