@@ -14,7 +14,7 @@ dotenv.config(); //Buscar las configuraciones del archivo .env
 conectarDB(); //Llamar la función para conectar la DB
 
 //Configurar Cors
-const whitelist = ['http://localhost:5173'];
+const whitelist = [process.env.FRONTEND_URL];
 
 const corsOptions = {
     origin: function (origin, callback) {
