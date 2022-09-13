@@ -18,8 +18,8 @@ const registrar = async (req, res) => {
     try {
         const usuario = new Usuario(req.body);
         usuario.token = generarID();
-        const usuarioAlmacenado = await usuario.save(); 
-        res.json(usuarioAlmacenado);
+        await usuario.save(); 
+        res.json({msg: 'Usuario registrado correctamente, revisa tu email para confirmar tu cuenta'});
     } catch (error) {
         console.error(error);
     }
