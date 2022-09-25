@@ -71,8 +71,6 @@ const confirmar = async (req, res) => {
     const { token } = req.params;
     const usuarioConfirmar = await Usuario.findOne({token});
 
-    console.log(usuarioConfirmar);
-
     //Token invalido
     if (!usuarioConfirmar) {
         const error = new Error("Hubo un error");
@@ -158,7 +156,6 @@ const nuevoPassword = async (req, res) => {
 const perfil = async (req, res) => {
     const { usuario } = req;
 
-    console.log(usuario);
     res.json(usuario);
 }
 
