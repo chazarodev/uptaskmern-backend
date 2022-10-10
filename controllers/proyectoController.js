@@ -26,15 +26,15 @@ const obtenerProyecto = async (req, res) => {
     const { id } = req.params;
 
     //Obtener el proyecto con sus tareas
-    const proyecto = await Proyecto.findById(id).populate('tareas')
+    const proyecto = await Proyecto.findById(id).populate('tareas').populate('colaboradores', 'nombre email');
 
     if (!proyecto) {
-        const error = new Error("Proyecto no encontrado")
+        const error = new Error("Proyecto no encontrado");
         return res.status(404).json({msg: error.message});
     }
     
     if (proyecto.creador.toString() !== req.usuario._id.toString()) {
-        const error = new Error("Sin permisos para consultar este proyecto")
+        const error = new Error("Sin permisos para consultar este proyecto");
         return res.status(401).json({msg: error.message});
     }
 
@@ -151,6 +151,22 @@ const agregarColaborador = async (req, res) => {
 }
 
 const eliminarColaborador = async (req, res) => {
+    const proyecto = await Proyecto.findById(req.params.id);
+
+    if (!proyecto) {
+        const error = new Error("Proyecto no Encontrado");
+        return res.status(404).json({msg: error.message})
+    }
+    
+    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+        const error = new Error("Acción no válida");
+        return res.status(404).json({msg: error.message})
+    }
+    
+    //Después de las comprobaciones, podemos eliminar colaborador
+    proyecto.colaboradores.pull(req.body.id);
+    await proyecto.save();
+    res.json({msg: "Colaborador ha sido eliminado"});
 
 }
 
