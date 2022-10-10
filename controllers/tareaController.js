@@ -113,6 +113,8 @@ const cambiarEstado = async (req, res) => {
     }
 
     tarea.estado = !tarea.estado;
+    tarea.completado = req.usuario._id; //Valdiar cuál usuario completó la tarea?
+    tarea.populate("completado");//Extraer la informaciíon del nombre de usuario que completó la tarea
     await tarea.save();
     res.json(tarea);
 }

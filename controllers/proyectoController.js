@@ -31,8 +31,13 @@ const nuevoProyecto = async (req, res) => {
 const obtenerProyecto = async (req, res) => {
     const { id } = req.params;
 
-    //Obtener el proyecto con sus tareas
-    const proyecto = await Proyecto.findById(id).populate('tareas').populate('colaboradores', 'nombre email');
+    //Obtener el proyecto con sus tareas y la información de quién a completado un proyecto
+    const proyecto = await Proyecto.findById(id)
+    .populate({
+        path: 'tareas', 
+        populate: {path: 'completado', select: 'nombre'},
+    })
+    .populate('colaboradores', 'nombre email');
 
     if (!proyecto) {
         const error = new Error("Proyecto no encontrado");
